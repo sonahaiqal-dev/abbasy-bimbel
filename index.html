@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abbasy Bimbel - Grand Opening</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        abbasy: {
+                            DEFAULT: '#f3a11c', // Warna Utama Kamu
+                            light: '#fff8eb',   // Versi pudar untuk background
+                            dark: '#d68b0e',    // Versi gelap untuk hover tombol
+                        }
+                    },
+                    fontFamily: {
+                        // Prioritas ke Uniform Pro, kalau tidak ada lari ke Montserrat
+                        heading: ['"Uniform Pro"', '"Montserrat"', 'sans-serif'],
+                        body: ['"Nunito"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* CSS untuk memuat Font Lokal (Pastikan file font ada di folder yang sama/folder fonts) */
+        @font-face {
+            font-family: 'Uniform Pro';
+            /* Ganti url ini jika lokasi file fontmu berbeda */
+            src: url('fonts/UniformPro-Bold.otf') format('opentype'); 
+            font-weight: bold;
+        }
+
+        body { font-family: 'Nunito', sans-serif; }
+        h1, h2, h3, .brand-font { font-family: theme('fontFamily.heading'); }
+        
+        /* Animasi Card Melayang */
+        .floating-card {
+            transition: all 0.3s ease;
+        }
+        .floating-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Animasi smooth untuk scroll */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-body">
+
+    <nav class="fixed w-full z-50 bg-white shadow-md py-3 px-6 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-abbasy rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">AB</div>
+            <span class="text-xl font-bold text-abbasy brand-font tracking-wide">ABBASY BIMBEL</span>
+        </div>
+        <a href="#form-daftar" class="bg-blue-600 hover:bg-blue-700 text-white px-5 md:px-6 py-2 rounded-full font-bold transition shadow-lg shadow-blue-200 text-sm md:text-base">
+            Daftar Sekarang
+        </a>
+    </nav>
+
+    <section class="pt-28 pb-16 px-6 bg-abbasy-light relative overflow-hidden">
+        <div class="container mx-auto flex flex-col items-center text-center">
+            <div class="relative w-full max-w-4xl mb-10 group">
+                <div class="absolute -inset-1 bg-abbasy rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                
+                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=2022&auto=format&fit=crop" alt="Suasana Belajar" class="relative rounded-[2rem] shadow-2xl w-full h-64 md:h-96 object-cover border-4 border-white">
+                
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-full shadow-xl border-4 border-abbasy">
+                    <div class="w-20 h-20 md:w-24 md:h-24 bg-yellow-400 rounded-full flex items-center justify-center text-abbasy font-bold text-2xl md:text-3xl brand-font">LOGO</div>
+                </div>
+            </div>
+
+            <h1 class="text-4xl md:text-6xl font-black text-blue-900 mb-4 tracking-tight uppercase">
+                Abbasy <span class="text-abbasy">Bimbel</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 font-bold italic mb-8 max-w-2xl mx-auto leading-relaxed">
+                "Belajar Jadi Menyenangkan, <br class="hidden md:block">Masa Depan Lebih Cemerlang"
+            </p>
+            
+            <a href="#program-container" class="inline-block animate-bounce text-abbasy text-3xl hover:text-orange-600 transition">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <section class="py-16 px-6 container mx-auto" id="program-container-section">
+        <h2 class="text-3xl md:text-4xl font-black text-center text-blue-900 mb-12 uppercase tracking-wide brand-font">Pilihan Program Kelas</h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6" id="program-container">
+            </div>
+    </section>
+
+    <div id="classModal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-2xl transform transition-all scale-100 animate-fade-in-up">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl font-bold bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition">×</button>
+            
+            <h3 id="modalTitle" class="text-2xl font-black text-blue-900 mb-2 brand-font uppercase"></h3>
+            <img id="modalImg" src="" class="w-full h-48 object-cover rounded-xl mb-4 shadow-md">
+            
+            <p class="text-gray-600 mb-4 leading-relaxed text-sm md:text-base">Program unggulan dengan materi yang disesuaikan kurikulum terbaru. Metode belajar interaktif membuat anak lebih cepat paham.</p>
+            
+            <div class="bg-abbasy-light border border-abbasy p-4 rounded-xl mb-6 text-center">
+                <span class="text-xs md:text-sm text-gray-600 font-bold uppercase tracking-wider">Biaya Investasi</span>
+                <p id="modalPrice" class="text-2xl md:text-3xl font-black text-abbasy mt-1 brand-font"></p>
+            </div>
+            
+            <a href="#form-daftar" onclick="selectProgramFromModal()" class="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Daftar Program Ini</a>
+        </div>
+    </div>
+
+    <section class="py-16 bg-white relative">
+        <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-gray-50 to-white"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <h2 class="text-3xl md:text-4xl font-black text-center text-blue-900 mb-16 uppercase brand-font">Kenapa Harus <span class="text-abbasy">Abbasy?</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                <div class="flex items-start gap-5 group">
+                    <div class="bg-abbasy-light p-5 rounded-2xl text-abbasy text-3xl shadow-sm group-hover:bg-abbasy group-hover:text-white transition duration-300">
+                        <i class="fas fa-smile-beam"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Metode Fun Learning</h4>
+                        <p class="text-gray-600 leading-relaxed">Belajar tanpa rasa tertekan. Kami menggunakan pendekatan bermain sambil belajar agar materi mudah diserap.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-5 group">
+                    <div class="bg-blue-50 p-5 rounded-2xl text-blue-600 text-3xl shadow-sm group-hover:bg-blue-600 group-hover:text-white transition duration-300">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Tentor Sahabat Anak</h4>
+                        <p class="text-gray-600 leading-relaxed">Kakak tentor yang ramah, sabar, dan komunikatif. Siap menjadi teman diskusi terbaik bagi anak.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-5 group">
+                    <div class="bg-green-50 p-5 rounded-2xl text-green-600 text-3xl shadow-sm group-hover:bg-green-600 group-hover:text-white transition duration-300">
+                        <i class="fas fa-quran"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Pendidikan Karakter</h4>
+                        <p class="text-gray-600 leading-relaxed">Keseimbangan IQ dan EQ. Kami sisipkan nilai adab, akhlak, dan agama (Tahsin/Tahfidz) di sela pembelajaran.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-5 group">
+                    <div class="bg-purple-50 p-5 rounded-2xl text-purple-600 text-3xl shadow-sm group-hover:bg-purple-600 group-hover:text-white transition duration-300">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Biaya Terjangkau</h4>
+                        <p class="text-gray-600 leading-relaxed">Pendidikan berkualitas adalah hak semua anak. Kami berikan harga terbaik tanpa mengurangi kualitas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-50 px-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-abbasy opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 opacity-5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+
+        <div class="container mx-auto max-w-5xl relative z-10">
+            
+            <div class="text-center mb-12">
+                <span class="text-abbasy font-bold tracking-widest uppercase text-xs md:text-sm bg-orange-100 px-4 py-2 rounded-full">Informasi Penting</span>
+                <h2 class="text-3xl md:text-4xl font-black text-blue-900 mt-4 brand-font uppercase">Yang Sering Ditanyakan</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
+                
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-abbasy hover:shadow-md transition duration-300">
+                    <h4 class="font-bold text-lg text-gray-800 mb-2 flex items-center gap-2">
+                        <i class="fas fa-money-bill-wave text-abbasy"></i> Berapa biaya pendaftarannya?
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed">Sangat terjangkau! Biaya pendaftaran hanya <strong>Rp 50.000</strong> flat untuk semua pilihan program studi.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-blue-500 hover:shadow-md transition duration-300">
+                    <h4 class="font-bold text-lg text-gray-800 mb-2 flex items-center gap-2">
+                        <i class="far fa-clock text-blue-500"></i> Kapan jadwal belajarnya?
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed">Bimbel buka setiap <strong>Senin - Jum'at</strong>. Sesi belajar tersedia mulai pukul <strong>08.00 - 20.00 WIB</strong> (Fleksibel).</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-green-500 hover:shadow-md transition duration-300">
+                    <h4 class="font-bold text-lg text-gray-800 mb-2 flex items-center gap-2">
+                        <i class="fas fa-users text-green-500"></i> Satu kelas isi berapa anak?
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed">Demi kenyamanan, kami membatasi maksimal <strong>5-8 anak</strong> per sesi agar pengajar bisa lebih fokus membimbing.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-purple-500 hover:shadow-md transition duration-300">
+                    <h4 class="font-bold text-lg text-gray-800 mb-2 flex items-center gap-2">
+                        <i class="fas fa-gift text-purple-500"></i> Apakah ada Free Trial?
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed">Tentu! Silakan hubungi admin untuk menjadwalkan <strong>1x sesi gratis</strong> agar anak bisa merasakan suasana belajarnya.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-red-500 hover:shadow-md transition duration-300 md:col-span-2">
+                    <h4 class="font-bold text-lg text-gray-800 mb-2 flex items-center gap-2">
+                        <i class="fas fa-book-reader text-red-500"></i> Apa bedanya Program "Pra SD" dan "Mewarnai"?
+                    </h4>
+                    <p class="text-gray-600 leading-relaxed"><strong>Pra SD</strong> fokus pada persiapan Calistung (Baca Tulis Hitung) dasar. Sedangkan <strong>Mewarnai</strong> fokus pada melatih motorik halus dan kreativitas seni anak.</p>
+                </div>
+            </div>
+
+            <div class="relative max-w-4xl mx-auto">
+                <div class="absolute -top-6 -left-6 text-6xl text-gray-200 opacity-50 z-0">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                
+                <div class="bg-gradient-to-r from-abbasy to-orange-400 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative z-10 overflow-hidden transform md:-rotate-1 hover:rotate-0 transition duration-500">
+                    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(white 2px, transparent 2px); background-size: 20px 20px;"></div>
+                    
+                    <div class="relative flex flex-col md:flex-row items-center gap-8">
+                        <div class="bg-white bg-opacity-20 p-6 rounded-full flex-shrink-0 backdrop-blur-sm border border-white/30">
+                            <i class="fas fa-lightbulb text-4xl text-white animate-pulse"></i>
+                        </div>
+                        
+                        <div class="text-center md:text-left">
+                            <h3 class="text-xl md:text-2xl font-bold leading-relaxed brand-font italic">
+                                "Pendidikan bukan cuma pergi ke sekolah dan mendapatkan gelar. Tapi, juga soal memperluas pengetahuan dan menyerap ilmu kehidupan."
+                            </h3>
+                            <div class="mt-6 flex items-center justify-center md:justify-start gap-3">
+                                <div class="w-12 h-1 bg-white rounded-full"></div>
+                                <p class="font-black tracking-widest uppercase text-sm text-yellow-100">Abbasy Bimbel Team</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="absolute top-4 left-4 w-full h-full bg-blue-900 rounded-3xl -z-10 transform rotate-2 opacity-10"></div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="form-daftar" class="py-20 bg-abbasy-light px-6 -mt-10 pt-32">
+        <div class="container mx-auto max-w-2xl bg-white rounded-[2rem] shadow-2xl overflow-hidden border-2 border-white relative">
+            <div class="absolute top-0 left-0 w-full h-3 bg-abbasy"></div>
+            
+            <div class="p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-black text-blue-900 mb-2 brand-font uppercase">Formulir Pendaftaran</h2>
+                    <p class="text-gray-500">Isi data dengan benar, sistem akan mengarahkan ke WhatsApp Admin.</p>
+                </div>
+                
+                <form id="registrationForm" onsubmit="submitToWA(event)" class="space-y-5">
+                    
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-abbasy uppercase text-sm tracking-wider border-b border-gray-100 pb-2">Data Calon Siswa</h3>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-bold mb-2 text-sm">Nama Lengkap</label>
+                            <input type="text" id="nama" required class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-abbasy focus:ring-2 focus:ring-abbasy/20 focus:outline-none transition font-semibold">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2 text-sm">Tempat Lahir</label>
+                                <input type="text" id="tempat_lahir" required class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-abbasy focus:ring-abbasy/20 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2 text-sm">Tanggal Lahir</label>
+                                <input type="date" id="tgl_lahir" required class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-abbasy focus:ring-abbasy/20 focus:outline-none transition">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 font-bold mb-2 text-sm">Alamat Lengkap</label>
+                            <textarea id="alamat" rows="2" required class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-abbasy focus:ring-abbasy/20 focus:outline-none transition"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2 text-sm">Kelas (Sekolah)</label>
+                                <input type="text" id="kelas_sekolah" placeholder="Cth: 4 SD" required class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-abbasy focus:ring-abbasy/20 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-bold mb-2 text-sm">Asal Sekolah</label>
+                                <input type="text" id="asal_sekolah" required class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-abbasy focus:ring-abbasy/20 focus:outline-none transition">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 font-bold mb-2 text-sm">Program Pilihan</label>
+                            <div class="relative">
+                                <select id="pilihan_program" class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-abbasy focus:ring-abbasy/20 focus:outline-none transition appearance-none cursor-pointer font-bold text-gray-700">
+                                    </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-abbasy">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-4">
+                        <h3 class="font-bold text-abbasy uppercase text-sm tracking-wider border-b border-gray-100 pb-2">Data Orang Tua</h3>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-bold mb-2 text-sm">No. Telepon / WhatsApp</label>
+                            <input type="tel" id="no_telp" required placeholder="08xx-xxxx-xxxx" class="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-abbasy focus:ring-abbasy/20 focus:outline-none transition">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-500 text-xs mb-1">Nama Ayah</label>
+                                <input type="text" id="nama_ayah" required class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-abbasy focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-gray-500 text-xs mb-1">Pekerjaan Ayah</label>
+                                <input type="text" id="pekerjaan_ayah" required class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-abbasy focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-500 text-xs mb-1">Nama Ibu</label>
+                                <input type="text" id="nama_ibu" required class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-abbasy focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-gray-500 text-xs mb-1">Pekerjaan Ibu</label>
+                                <input type="text" id="pekerjaan_ibu" required class="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 focus:border-abbasy focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-black py-4 rounded-xl text-lg transition shadow-xl shadow-green-200 flex items-center justify-center gap-3 transform hover:-translate-y-1 mt-6">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                        KIRIM PENDAFTARAN
+                    </button>
+                    <p class="text-xs text-center text-gray-400 mt-2">*Anda akan dialihkan ke WhatsApp Admin</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
+            
+            <div>
+                <h3 class="text-xl font-bold mb-6 text-abbasy brand-font tracking-wide">LOKASI KAMI</h3>
+                <div class="flex items-start gap-3 mb-4 text-gray-400">
+                    <i class="fas fa-map-marker-alt mt-1 text-abbasy"></i>
+                    <p>Jl. Wonodadi 1 Gg. H. M. Yasir No. 2</p>
+                </div>
+                <div class="w-full h-48 bg-gray-800 rounded-xl overflow-hidden shadow-inner border border-gray-700">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.817947671181!2d109.3892708!3d-0.0601977!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMMKwMDMnMzYuNyJTIDEwOcKwMjMnMjEuNCJF!5e0!3m2!1sen!2sid!4v1633000000000!5m2!1sen!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+
+            <div class="text-center md:text-left">
+                <h3 class="text-xl font-bold mb-6 text-abbasy brand-font tracking-wide">HUBUNGI KAMI</h3>
+                <div class="space-y-3 text-gray-300">
+                    <p class="flex items-center justify-center md:justify-start gap-3">
+                        <span class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-500"><i class="fab fa-whatsapp"></i></span> 
+                        <span class="text-lg font-bold">0898-3823-239</span>
+                    </p>
+                    <p class="text-sm text-gray-500 pl-11">Senin - Jum'at (08.00 - 20.00)</p>
+                </div>
+                
+                <div class="mt-8">
+                    <p class="text-sm text-gray-400 mb-3">Mau tanya-tanya dulu?</p>
+                    <a href="https://wa.me/628983823239?text=Halo%20Admin%20Abbasy,%20saya%20ingin%20konsultasi%20dulu%20dong" class="inline-flex items-center gap-2 bg-transparent border-2 border-abbasy text-abbasy px-6 py-3 rounded-full hover:bg-abbasy hover:text-white transition font-bold">
+                        <i class="far fa-comment-dots"></i> Free Konsultasi
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center justify-center pt-8 md:pt-0 border-t md:border-t-0 border-gray-800">
+                <div class="w-24 h-24 bg-abbasy rounded-full flex items-center justify-center text-white font-black text-3xl mb-4 shadow-lg shadow-abbasy/20 animate-pulse">AB</div>
+                <h3 class="text-3xl font-black brand-font tracking-wide">ABBASY</h3>
+                <h4 class="text-xl font-medium tracking-widest text-gray-500">BIMBEL</h4>
+                <p class="text-xs text-gray-600 mt-8">© 2024 All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. DATA PROGRAM (Sesuai Request)
+        const programs = [
+            { name: "Pra SD", price: "150.000/bulan", img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=500&q=60" },
+            { name: "Mapel SD", price: "200.000/bulan", img: "https://images.unsplash.com/photo-1587588266205-0604118f6029?auto=format&fit=crop&w=500&q=60" },
+            { name: "Mapel SMP", price: "250.000/bulan", img: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=500&q=60" },
+            { name: "Mapel SMA", price: "300.000/bulan", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=500&q=60" },
+            { name: "Tahsin/Tahfidz", price: "200.000/bulan", img: "https://images.unsplash.com/photo-1576487248805-cf45f6bcc67f?auto=format&fit=crop&w=500&q=60" },
+            { name: "Bahasa Inggris", price: "250.000/bulan", img: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=500&q=60" },
+            { name: "Mewarnai", price: "150.000/bulan", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=500&q=60" },
+            { name: "Komputer", price: "300.000/program", img: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=500&q=60" },
+        ];
+
+        // 2. GENERATE CARDS & SELECT OPTIONS
+        const container = document.getElementById('program-container');
+        const selectBox = document.getElementById('pilihan_program');
+
+        programs.forEach(prog => {
+            // Generate Card HTML
+            const card = `
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden floating-card cursor-pointer group" onclick="openModal('${prog.name}', '${prog.price}', '${prog.img}')">
+                    <div class="h-40 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-abbasy opacity-0 group-hover:opacity-20 transition duration-300 z-10"></div>
+                        <img src="${prog.img}" alt="${prog.name}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+                    </div>
+                    <div class="p-5 text-center">
+                        <h3 class="font-black text-lg text-blue-900 brand-font">${prog.name}</h3>
+                        <p class="text-abbasy font-bold text-xs uppercase mt-2 tracking-wide border border-abbasy rounded-full px-2 py-1 inline-block">Lihat Detail</p>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += card;
+
+            // Generate Select Option HTML
+            const option = `<option value="${prog.name}">${prog.name}</option>`;
+            selectBox.innerHTML += option;
+        });
+
+        // 3. MODAL LOGIC (Popup)
+        const modal = document.getElementById('classModal');
+        let currentSelectedProgram = "";
+
+        function openModal(name, price, img) {
+            document.getElementById('modalTitle').innerText = name;
+            document.getElementById('modalPrice').innerText = price;
+            document.getElementById('modalImg').src = img;
+            currentSelectedProgram = name;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        function selectProgramFromModal() {
+            closeModal();
+            selectBox.value = currentSelectedProgram;
+        }
+
+        // Tutup modal jika klik di area gelap (luar box)
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // 4. SUBMIT TO WHATSAPP
+        function submitToWA(e) {
+            e.preventDefault();
+
+            // Ambil Data dari Input
+            const nama = document.getElementById('nama').value;
+            const tempatLahir = document.getElementById('tempat_lahir').value;
+            const tglLahir = document.getElementById('tgl_lahir').value;
+            const alamat = document.getElementById('alamat').value;
+            const kelasSekolah = document.getElementById('kelas_sekolah').value;
+            const asalSekolah = document.getElementById('asal_sekolah').value;
+            const program = document.getElementById('pilihan_program').value;
+            const noTelp = document.getElementById('no_telp').value;
+            const namaAyah = document.getElementById('nama_ayah').value;
+            const pekerjaanAyah = document.getElementById('pekerjaan_ayah').value;
+            const namaIbu = document.getElementById('nama_ibu').value;
+            const pekerjaanIbu = document.getElementById('pekerjaan_ibu').value;
+
+            // Format Pesan WhatsApp
+            const text = `Halo Admin Abbasy Bimbel, saya ingin mendaftar.%0A%0A` +
+                         `*DATA SISWA*%0A` +
+                         `Nama Lengkap: ${nama}%0A` +
+                         `TTL: ${tempatLahir}, ${tglLahir}%0A` +
+                         `Alamat: ${alamat}%0A` +
+                         `Kelas: ${kelasSekolah}%0A` +
+                         `Asal Sekolah: ${asalSekolah}%0A` +
+                         `Program Pilihan: ${program}%0A%0A` +
+                         `*DATA ORANG TUA*%0A` +
+                         `No HP: ${noTelp}%0A` +
+                         `Ayah: ${namaAyah} (${pekerjaanAyah})%0A` +
+                         `Ibu: ${namaIbu} (${pekerjaanIbu})`;
+            
+            const waNumber = "628983823239"; 
+            const url = `https://wa.me/${waNumber}?text=${text}`;
+            
+            // Redirect ke WA
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
