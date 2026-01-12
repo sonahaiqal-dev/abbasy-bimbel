@@ -43,37 +43,44 @@
         body { font-family: 'Nunito', sans-serif; }
         h1, h2, h3, .brand-font { font-family: theme('fontFamily.heading'); }
         
-        .floating-card {
-            transition: all 0.3s ease;
-        }
-        .floating-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
+        .floating-card { transition: all 0.3s ease; }
+        .floating-card:hover { transform: translateY(-10px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
         
-        /* Custom Scrollbar untuk Modal Description jika kepanjangan */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #ccc; 
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #f3a11c; 
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #f3a11c; }
         
         html { scroll-behavior: smooth; }
+
+        /* ANIMASI SLIDER SISWA (INFINITE SCROLL) */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-250px * 10)); }
+        }
+        
+        .slider-track {
+            display: flex;
+            width: calc(250px * 20); 
+            animation: scroll 40s linear infinite; 
+        }
+        
+        .slide {
+            width: 250px;
+            padding: 0 10px;
+            flex-shrink: 0;
+        }
+
+        .slider-container:hover .slider-track {
+            animation-play-state: paused;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-body">
 
     <nav class="fixed w-full z-50 bg-white shadow-md py-3 px-6 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="w-10 h-10 bg-abbasy rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">AB</div>
+        <div class="flex items-center gap-3">
+            <img src="logo.png" alt="Logo Abbasy" class="h-10 w-auto object-contain">
             <span class="text-xl font-bold text-abbasy brand-font tracking-wide">ABBASY BIMBEL</span>
         </div>
         <a href="#form-daftar" class="bg-blue-600 hover:bg-blue-700 text-white px-5 md:px-6 py-2 rounded-full font-bold transition shadow-lg shadow-blue-200 text-sm md:text-base">
@@ -86,8 +93,9 @@
             <div class="relative w-full max-w-4xl mb-10 group">
                 <div class="absolute -inset-1 bg-abbasy rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                 <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=2022&auto=format&fit=crop" alt="Suasana Belajar" class="relative rounded-[2rem] shadow-2xl w-full h-64 md:h-96 object-cover border-4 border-white">
+                
                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-full shadow-xl border-4 border-abbasy">
-                    <div class="w-20 h-20 md:w-24 md:h-24 bg-yellow-400 rounded-full flex items-center justify-center text-abbasy font-bold text-2xl md:text-3xl brand-font">LOGO</div>
+                    <img src="logo.png" alt="Logo Tengah" class="w-20 h-20 md:w-24 md:h-24 object-contain">
                 </div>
             </div>
 
@@ -98,7 +106,7 @@
                 "Belajar Jadi Menyenangkan, <br class="hidden md:block">Masa Depan Lebih Cemerlang"
             </p>
             
-            <a href="#program-container" class="inline-block animate-bounce text-abbasy text-3xl hover:text-orange-600 transition">
+            <a href="#program-container-section" class="inline-block animate-bounce text-abbasy text-3xl hover:text-orange-600 transition">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
@@ -106,80 +114,100 @@
 
     <section class="py-16 px-6 container mx-auto" id="program-container-section">
         <h2 class="text-3xl md:text-4xl font-black text-center text-blue-900 mb-12 uppercase tracking-wide brand-font">Pilihan Program Kelas</h2>
-        
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6" id="program-container">
             </div>
     </section>
 
-    <div id="classModal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 relative shadow-2xl transform transition-all scale-100 animate-fade-in-up flex flex-col max-h-[90vh]">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl font-bold bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition z-10">×</button>
-            
-            <div class="flex-shrink-0">
-                <h3 id="modalTitle" class="text-2xl font-black text-blue-900 mb-3 brand-font uppercase"></h3>
-                <img id="modalImg" src="" class="w-full h-40 object-cover rounded-xl mb-4 shadow-md">
-            </div>
-            
-            <div class="flex-grow overflow-y-auto custom-scrollbar pr-2 mb-4">
-                <div id="modalDesc" class="text-gray-600 leading-relaxed text-sm space-y-3">
-                    </div>
-            </div>
-            
-            <div class="flex-shrink-0 pt-2 border-t border-gray-100">
-                <div class="flex items-center justify-between mb-4 bg-abbasy-light p-3 rounded-lg border border-abbasy">
-                    <span class="text-xs text-gray-600 font-bold uppercase tracking-wider">Investasi Pendidikan</span>
-                    <p id="modalPrice" class="text-xl font-black text-abbasy brand-font"></p>
-                </div>
-                
-                <a href="#form-daftar" onclick="selectProgramFromModal()" class="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Daftar Program Ini</a>
-            </div>
-        </div>
-    </div>
-
     <section class="py-16 bg-white relative">
         <div class="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-gray-50 to-white"></div>
-        
         <div class="container mx-auto px-6 relative z-10">
             <h2 class="text-3xl md:text-4xl font-black text-center text-blue-900 mb-16 uppercase brand-font">Kenapa Harus <span class="text-abbasy">Abbasy?</span></h2>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                <div class="flex items-start gap-5 group">
-                    <div class="bg-abbasy-light p-5 rounded-2xl text-abbasy text-3xl shadow-sm group-hover:bg-abbasy group-hover:text-white transition duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center">
+                <div class="flex flex-col items-center text-center p-6 bg-abbasy-light rounded-2xl border border-abbasy/20 hover:shadow-lg transition">
+                    <div class="bg-white p-4 rounded-full text-abbasy text-4xl shadow-md mb-4 text-abbasy">
                         <i class="fas fa-smile-beam"></i>
                     </div>
-                    <div>
-                        <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Metode Fun Learning</h4>
-                        <p class="text-gray-600 leading-relaxed">Belajar tanpa rasa tertekan. Kami menggunakan pendekatan bermain sambil belajar agar materi mudah diserap.</p>
-                    </div>
+                    <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Metode Fun Learning</h4>
+                    <p class="text-gray-600 text-sm">Belajar tanpa rasa tertekan. Pendekatan bermain sambil belajar agar materi mudah diserap.</p>
                 </div>
-                <div class="flex items-start gap-5 group">
-                    <div class="bg-blue-50 p-5 rounded-2xl text-blue-600 text-3xl shadow-sm group-hover:bg-blue-600 group-hover:text-white transition duration-300">
+                <div class="flex flex-col items-center text-center p-6 bg-blue-50 rounded-2xl border border-blue-100 hover:shadow-lg transition">
+                    <div class="bg-white p-4 rounded-full text-blue-600 text-4xl shadow-md mb-4">
                         <i class="fas fa-user-graduate"></i>
                     </div>
-                    <div>
-                        <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Tentor Sahabat Anak</h4>
-                        <p class="text-gray-600 leading-relaxed">Kakak tentor yang ramah, sabar, dan komunikatif. Siap menjadi teman diskusi terbaik bagi anak.</p>
-                    </div>
+                    <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Tentor Sahabat Anak</h4>
+                    <p class="text-gray-600 text-sm">Kakak tentor yang ramah, sabar, dan komunikatif. Siap menjadi teman diskusi terbaik.</p>
                 </div>
-                <div class="flex items-start gap-5 group">
-                    <div class="bg-green-50 p-5 rounded-2xl text-green-600 text-3xl shadow-sm group-hover:bg-green-600 group-hover:text-white transition duration-300">
+                <div class="flex flex-col items-center text-center p-6 bg-green-50 rounded-2xl border border-green-100 hover:shadow-lg transition">
+                    <div class="bg-white p-4 rounded-full text-green-600 text-4xl shadow-md mb-4">
                         <i class="fas fa-quran"></i>
                     </div>
-                    <div>
-                        <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Pendidikan Karakter</h4>
-                        <p class="text-gray-600 leading-relaxed">Keseimbangan IQ dan EQ. Kami sisipkan nilai adab, akhlak, dan agama (Tahsin/Tahfidz) di sela pembelajaran.</p>
-                    </div>
+                    <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Pendidikan Karakter</h4>
+                    <p class="text-gray-600 text-sm">Keseimbangan IQ dan EQ. Sisipan nilai adab, akhlak, dan agama (Tahsin/Tahfidz) dalam belajar.</p>
                 </div>
-                <div class="flex items-start gap-5 group">
-                    <div class="bg-purple-50 p-5 rounded-2xl text-purple-600 text-3xl shadow-sm group-hover:bg-purple-600 group-hover:text-white transition duration-300">
+                <div class="flex flex-col items-center text-center p-6 bg-purple-50 rounded-2xl border border-purple-100 hover:shadow-lg transition md:col-start-1 md:col-end-2 md:translate-x-1/2 lg:col-auto lg:translate-x-0">
+                    <div class="bg-white p-4 rounded-full text-purple-600 text-4xl shadow-md mb-4">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Free Mentoring Ortu</h4>
+                    <p class="text-gray-600 text-sm">Konsultasi privat gratis bersama orang tua mengenai perkembangan anak. Sinergi antara bimbel dan rumah.</p>
+                </div>
+                <div class="flex flex-col items-center text-center p-6 bg-yellow-50 rounded-2xl border border-yellow-100 hover:shadow-lg transition md:col-start-2 md:col-end-4 md:-translate-x-1/4 lg:col-auto lg:translate-x-0">
+                    <div class="bg-white p-4 rounded-full text-yellow-500 text-4xl shadow-md mb-4">
                         <i class="fas fa-piggy-bank"></i>
                     </div>
-                    <div>
-                        <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Biaya Terjangkau</h4>
-                        <p class="text-gray-600 leading-relaxed">Pendidikan berkualitas adalah hak semua anak. Kami berikan harga terbaik tanpa mengurangi kualitas.</p>
+                    <h4 class="text-xl font-black text-gray-800 mb-2 brand-font">Biaya Terjangkau</h4>
+                    <p class="text-gray-600 text-sm">Pendidikan berkualitas adalah hak semua anak. Harga terbaik tanpa mengurangi kualitas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-abbasy px-6 pb-24 relative z-20">
+        <div class="container mx-auto">
+            <div class="text-center mb-10 text-white">
+                <h2 class="text-3xl md:text-4xl font-black brand-font uppercase">Suasana Belajar</h2>
+                <p class="text-white/80 mt-2">Intip keseruan belajar teman-teman di Abbasy Bimbel!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="group relative overflow-hidden rounded-2xl cursor-pointer shadow-xl h-64" onclick="openGallery('https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=1000&auto=format&fit=crop')">
+                    <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Suasana 1">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition duration-300"></i>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-2xl cursor-pointer shadow-xl h-64" onclick="openGallery('https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=1000&auto=format&fit=crop')">
+                    <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Suasana 2">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition duration-300"></i>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-2xl cursor-pointer shadow-xl h-64" onclick="openGallery('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1000&auto=format&fit=crop')">
+                    <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Suasana 3">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition duration-300"></i>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-2xl cursor-pointer shadow-xl h-64" onclick="openGallery('https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=1000&auto=format&fit=crop')">
+                    <img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Suasana 4">
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition flex items-center justify-center">
+                        <i class="fas fa-search-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition duration-300"></i>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="py-12 bg-white border-b border-gray-100 overflow-hidden relative z-10 -mt-10 rounded-t-[3rem]">
+        <div class="container mx-auto px-6 mb-8 text-center">
+            <h3 class="text-2xl font-black text-gray-800 brand-font uppercase tracking-wide">Teman-Teman Abbasy</h3>
+            <div class="w-20 h-1 bg-abbasy mx-auto mt-2 rounded-full"></div>
+        </div>
+        
+        <div class="slider-container w-full overflow-hidden">
+            <div class="slider-track" id="studentSlider">
+                </div>
         </div>
     </section>
 
@@ -384,7 +412,9 @@
             </div>
 
             <div class="flex flex-col items-center justify-center pt-8 md:pt-0 border-t md:border-t-0 border-gray-800">
-                <div class="w-24 h-24 bg-abbasy rounded-full flex items-center justify-center text-white font-black text-3xl mb-4 shadow-lg shadow-abbasy/20 animate-pulse">AB</div>
+                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-4 shadow-lg shadow-abbasy/20 animate-pulse p-2">
+                    <img src="logo.png" alt="Logo Footer" class="w-full h-full object-contain">
+                </div>
                 <h3 class="text-3xl font-black brand-font tracking-wide">ABBASY</h3>
                 <h4 class="text-xl font-medium tracking-widest text-gray-500">BIMBEL</h4>
                 <p class="text-xs text-gray-600 mt-8">© 2024 All Rights Reserved.</p>
@@ -392,26 +422,53 @@
         </div>
     </footer>
 
+    <div id="classModal" class="fixed inset-0 bg-black bg-opacity-60 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 relative shadow-2xl transform transition-all scale-100 flex flex-col max-h-[90vh]">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl font-bold bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition z-10">×</button>
+            <div class="flex-shrink-0">
+                <h3 id="modalTitle" class="text-2xl font-black text-blue-900 mb-3 brand-font uppercase"></h3>
+                <img id="modalImg" src="" class="w-full h-40 object-cover rounded-xl mb-4 shadow-md">
+            </div>
+            <div class="flex-grow overflow-y-auto custom-scrollbar pr-2 mb-4">
+                <div id="modalDesc" class="text-gray-600 leading-relaxed text-sm space-y-3"></div>
+            </div>
+            <div class="flex-shrink-0 pt-2 border-t border-gray-100">
+                <div class="flex items-center justify-between mb-4 bg-abbasy-light p-3 rounded-lg border border-abbasy">
+                    <span class="text-xs text-gray-600 font-bold uppercase tracking-wider">Investasi Pendidikan</span>
+                    <p id="modalPrice" class="text-xl font-black text-abbasy brand-font"></p>
+                </div>
+                <a href="#form-daftar" onclick="selectProgramFromModal()" class="block w-full bg-blue-600 text-white text-center py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition">Daftar Program Ini</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="galleryModal" class="fixed inset-0 bg-black bg-opacity-90 hidden z-[60] flex items-center justify-center p-4 backdrop-blur-md" onclick="closeGallery()">
+        <div class="relative max-w-4xl w-full">
+            <button onclick="closeGallery()" class="absolute -top-12 right-0 text-white hover:text-red-500 text-4xl font-bold transition">×</button>
+            <img id="galleryImg" src="" class="w-full h-auto max-h-[80vh] object-contain rounded-lg shadow-2xl border-2 border-white/20">
+        </div>
+    </div>
+
     <script>
-        // 1. DATA PROGRAM (DESKRIPSI LENGKAP & MENJUAL)
+        // --- 1. DATA PROGRAM (DETAIL LENGKAP & MENJUAL) ---
         const programs = [
             { 
                 name: "Pra SD", 
                 price: "150.000/bulan", 
                 img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=500&q=60",
-                desc: "<strong>Persiapan Masuk Sekolah Dasar</strong><br>Program khusus untuk anak usia 4-6 tahun yang ingin masuk SD. Fokus utama kami adalah membangun mental berani dan kemandirian anak.<br><br><i class='fas fa-check-circle text-green-500'></i> <strong>Materi:</strong> Pengenalan huruf & angka (Calistung Dasar), latihan memegang pensil (motorik halus), dan sosialisasi teman sebaya.<br><i class='fas fa-check-circle text-green-500'></i> <strong>Metode:</strong> 80% Bermain, 20% Belajar. Anak senang, orang tua tenang."
+                desc: "<strong>Persiapan Masuk Sekolah Dasar</strong><br>Program khusus untuk anak usia mulai dari 4 tahun yang ingin masuk SD. Fokus utama kami adalah membangun mental berani dan kemandirian anak.<br><br><i class='fas fa-check-circle text-green-500'></i> <strong>Materi:</strong> Pengenalan huruf & angka (Calistung Dasar), latihan memegang pensil (motorik halus), dan sosialisasi teman sebaya.<br><i class='fas fa-check-circle text-green-500'></i> <strong>Metode:</strong> 80% Bermain, 20% Belajar. Anak senang, orang tua tenang."
             },
             { 
                 name: "Mapel SD", 
                 price: "200.000/bulan", 
                 img: "https://images.unsplash.com/photo-1587588266205-0604118f6029?auto=format&fit=crop&w=500&q=60",
-                desc: "<strong>Pendampingan Belajar Harian (Kelas 1-6)</strong><br>Membantu siswa memahami materi sekolah yang belum dimengerti dan mendampingi pengerjaan tugas/PR agar tidak membebani orang tua di rumah.<br><br><i class='fas fa-check-circle text-green-500'></i> <strong>Materi:</strong> Tematik, Matematika, IPA, dan Bahasa.<br><i class='fas fa-check-circle text-green-500'></i> <strong>Target:</strong> Sukses Ulangan Harian, Penilaian Tengah Semester (PTS), dan Penilaian Akhir Semester (PAS)."
+                desc: "<strong>Pendampingan Belajar Harian (Kelas 1-6)</strong><br>Membantu siswa memahami materi sekolah yang belum dimengerti dan mendampingi pengerjaan tugas/PR agar tidak membebani orang tua di rumah. Dan membimbing siswa dalam meghadapi ulangan harian maupun ulangan umum, kami akan memberikan soal-soal latihan berdasarkan kisi-kisi yang diberikan Sekolah / sesuai materi yang sudah dipelajari.<br><br><i class='fas fa-check-circle text-green-500'></i> <strong>Materi:</strong> Tematik, Matematika, IPA, Bahasa (Indonesia, Inggris, dan Arab) dan Agama (Qur'an Hadits, Fiqh, Aqidah Akhlak, dan SKI).<br><i class='fas fa-check-circle text-green-500'></i> <strong>Target:</strong> Sukses Ulangan Harian, Penilaian Tengah Semester (PTS), dan Penilaian Akhir Semester (PAS)."
             },
             { 
                 name: "Mapel SMP", 
                 price: "250.000/bulan", 
                 img: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=500&q=60",
-                desc: "<strong>Penguasaan Konsep Akademik</strong><br>Masa transisi SD ke SMP seringkali sulit. Kami hadir untuk menyederhanakan materi rumit menjadi mudah dipahami dengan logika, bukan sekadar hafalan.<br><br><i class='fas fa-check-circle text-green-500'></i> <strong>Fokus:</strong> Matematika, IPA (Fisika & Biologi), dan Bahasa Inggris.<br><i class='fas fa-check-circle text-green-500'></i> <strong>Benefit:</strong> Siap menghadapi ujian sekolah dan meningkatkan rangking kelas."
+                desc: "<strong>Penguasaan Konsep Akademik</strong><br>Masa transisi SD ke SMP seringkali sulit. Kami hadir untuk menyederhanakan materi rumit menjadi mudah dipahami dengan logika, bukan sekadar hafalan.Dan membimbing siswa dalam meghadapi ulangan harian maupun ulangan umum, kami akan memberikan soal-soal latihan berdasarkan kisi-kisi yang diberikan Sekolah / sesuai materi yang sudah dipelajari.<br><br><i class='fas fa-check-circle text-green-500'></i> <strong>Fokus:</strong> Matematika, IPA (Fisika & Biologi), dan Bahasa (Indonesia, Inggris, dan Arab) dan Agama (Qur'an Hadits, Fiqh, Aqidah Akhlak, dan SKI)..<br><i class='fas fa-check-circle text-green-500'></i> <strong>Benefit:</strong> Siap menghadapi ujian sekolah dan meningkatkan rangking kelas."
             },
             { 
                 name: "Mapel SMA", 
@@ -445,99 +502,87 @@
             },
         ];
 
-        // 2. GENERATE CARDS & SELECT OPTIONS
+        // --- 2. GENERATE CARDS & SELECT OPTIONS ---
         const container = document.getElementById('program-container');
         const selectBox = document.getElementById('pilihan_program');
-
         programs.forEach((prog, index) => {
-            // Generate Card HTML
-            const card = `
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden floating-card cursor-pointer group" onclick="openModal(${index})">
-                    <div class="h-40 overflow-hidden relative">
-                        <div class="absolute inset-0 bg-abbasy opacity-0 group-hover:opacity-20 transition duration-300 z-10"></div>
-                        <img src="${prog.img}" alt="${prog.name}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
-                    </div>
-                    <div class="p-5 text-center">
-                        <h3 class="font-black text-lg text-blue-900 brand-font">${prog.name}</h3>
-                        <p class="text-abbasy font-bold text-xs uppercase mt-2 tracking-wide border border-abbasy rounded-full px-2 py-1 inline-block">Lihat Detail</p>
-                    </div>
-                </div>
-            `;
-            container.innerHTML += card;
-
-            // Generate Select Option HTML
-            const option = `<option value="${prog.name}">${prog.name}</option>`;
-            selectBox.innerHTML += option;
+            container.innerHTML += `<div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden floating-card cursor-pointer group" onclick="openModal(${index})"><div class="h-40 overflow-hidden relative"><div class="absolute inset-0 bg-abbasy opacity-0 group-hover:opacity-20 transition duration-300 z-10"></div><img src="${prog.img}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500"></div><div class="p-5 text-center"><h3 class="font-black text-lg text-blue-900 brand-font">${prog.name}</h3><p class="text-abbasy font-bold text-xs uppercase mt-2 tracking-wide border border-abbasy rounded-full px-2 py-1 inline-block">Lihat Detail</p></div></div>`;
+            selectBox.innerHTML += `<option value="${prog.name}">${prog.name}</option>`;
         });
 
-        // 3. MODAL LOGIC (Supports HTML in Description)
+        // --- 3. GENERATE FOTO SISWA SLIDER (AUTO LOOP) ---
+        const studentSlider = document.getElementById('studentSlider');
+        const studentPhotos = [
+            "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=300", 
+            "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=300",
+            "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=300",
+            "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=300",
+            "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300",
+            "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=300",
+            "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=300",
+            "https://images.unsplash.com/photo-1540479859555-17af45c78602?w=300",
+            "https://images.unsplash.com/photo-1491013516836-7d32495d2127?w=300",
+            "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=300"
+        ];
+
+        function generateSlides() {
+            let slidesHTML = "";
+            for(let i=0; i<2; i++) {
+                studentPhotos.forEach(photo => {
+                    slidesHTML += `
+                        <div class="slide">
+                            <div class="bg-gray-200 rounded-xl overflow-hidden h-40 w-full shadow-md">
+                                <img src="${photo}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-300">
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            studentSlider.innerHTML = slidesHTML;
+        }
+        generateSlides();
+
+        // --- 4. MODAL LOGIC ---
         const modal = document.getElementById('classModal');
         let currentSelectedProgram = "";
-
         function openModal(index) {
             const data = programs[index];
-            
             document.getElementById('modalTitle').innerText = data.name;
             document.getElementById('modalPrice').innerText = data.price;
             document.getElementById('modalImg').src = data.img;
-            
-            // Menggunakan innerHTML agar tag HTML (bold, br, dll) terbaca
             document.getElementById('modalDesc').innerHTML = data.desc;
-            
             currentSelectedProgram = data.name;
             modal.classList.remove('hidden');
         }
-
-        function closeModal() {
-            modal.classList.add('hidden');
-        }
-
-        function selectProgramFromModal() {
-            closeModal();
-            selectBox.value = currentSelectedProgram;
-        }
-
+        function closeModal() { modal.classList.add('hidden'); }
+        function selectProgramFromModal() { closeModal(); selectBox.value = currentSelectedProgram; }
+        
+        const galleryModal = document.getElementById('galleryModal');
+        function openGallery(src) { document.getElementById('galleryImg').src = src; galleryModal.classList.remove('hidden'); }
+        function closeGallery() { galleryModal.classList.add('hidden'); }
+        
         window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
+            if (event.target == modal) closeModal();
+            if (event.target == galleryModal) closeGallery();
         }
 
-        // 4. SUBMIT TO WHATSAPP
+        // --- 5. SUBMIT TO WA ---
         function submitToWA(e) {
             e.preventDefault();
-
-            // Ambil Data
-            const nama = document.getElementById('nama').value;
-            const tempatLahir = document.getElementById('tempat_lahir').value;
-            const tglLahir = document.getElementById('tgl_lahir').value;
-            const alamat = document.getElementById('alamat').value;
-            const kelasSekolah = document.getElementById('kelas_sekolah').value;
-            const asalSekolah = document.getElementById('asal_sekolah').value;
-            const program = document.getElementById('pilihan_program').value;
-            const noTelp = document.getElementById('no_telp').value;
-            const namaAyah = document.getElementById('nama_ayah').value;
-            const pekerjaanAyah = document.getElementById('pekerjaan_ayah').value;
-            const namaIbu = document.getElementById('nama_ibu').value;
-            const pekerjaanIbu = document.getElementById('pekerjaan_ibu').value;
-
+            const getVal = (id) => document.getElementById(id).value;
             const text = `Halo Admin Abbasy Bimbel, saya ingin mendaftar.%0A%0A` +
                          `*DATA SISWA*%0A` +
-                         `Nama Lengkap: ${nama}%0A` +
-                         `TTL: ${tempatLahir}, ${tglLahir}%0A` +
-                         `Alamat: ${alamat}%0A` +
-                         `Kelas: ${kelasSekolah}%0A` +
-                         `Asal Sekolah: ${asalSekolah}%0A` +
-                         `Program Pilihan: ${program}%0A%0A` +
-                         `*DATA ORANG TUA*%0A` +
-                         `No HP: ${noTelp}%0A` +
-                         `Ayah: ${namaAyah} (${pekerjaanAyah})%0A` +
-                         `Ibu: ${namaIbu} (${pekerjaanIbu})`;
-            
-            const waNumber = "628983823239"; 
-            const url = `https://wa.me/${waNumber}?text=${text}`;
-            
-            window.open(url, '_blank');
+                         `Nama: ${getVal('nama')}%0A` +
+                         `TTL: ${getVal('tempat_lahir')}, ${getVal('tgl_lahir')}%0A` +
+                         `Alamat: ${getVal('alamat')}%0A` +
+                         `Kelas: ${getVal('kelas_sekolah')}%0A` +
+                         `Asal Sekolah: ${getVal('asal_sekolah')}%0A` +
+                         `Program: ${getVal('pilihan_program')}%0A%0A` +
+                         `*DATA ORTU*%0A` +
+                         `HP: ${getVal('no_telp')}%0A` +
+                         `Ayah: ${getVal('nama_ayah')} (${getVal('pekerjaan_ayah')})%0A` +
+                         `Ibu: ${getVal('nama_ibu')} (${getVal('pekerjaan_ibu')})`;
+            window.open(`https://wa.me/628983823239?text=${text}`, '_blank');
         }
     </script>
 </body>
